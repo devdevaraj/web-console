@@ -4,3 +4,17 @@
  padding: 0;
  overflow: hidden;
 }
+/* For Webkit-based browsers (Chrome, Edge, Safari) */
+*::-webkit-scrollbar {
+ display: none;
+}
+
+/* For Firefox */
+* {
+ scrollbar-width: none;
+}
+
+/* For Internet Explorer and Edge */
+* {
+ -ms-overflow-style: none;
+}

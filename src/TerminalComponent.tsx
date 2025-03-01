@@ -7,7 +7,7 @@ import { DefaultEventsMap } from "socket.io";
 
 function TerminalComponent() {
  const terminalRef = useRef<HTMLDivElement | null>(null);
- const socket = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>(io("http://localhost:3000"));
+ const socket = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>(io(import.meta.env.VITE_BASE_URL));
  const term = useRef<Terminal | null>(null);
 
  useEffect(() => {
@@ -22,8 +22,6 @@ function TerminalComponent() {
   term.current.loadAddon(fitAddon);
   term.current.open(terminalRef.current!);
   fitAddon.fit();
-
-  console.log(window.location.host);
 
   socket.current.on("terminal-data", data => {
    term.current?.write(data);

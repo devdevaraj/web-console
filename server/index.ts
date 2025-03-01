@@ -18,19 +18,15 @@ const shell = os.platform() === "win32" ? "poweshell.exe" : "bash";
 const app = express();
 const server = http.createServer(app);
 // const wss = new WebSocketServer({ server, perMessageDeflate: false });
+app.use(
+  cors({
+    origin: [process.env.VITE_BASE_URL!],
+  })
+);
 const io = new Server(server, {
-  cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] },
+  cors: { origin: [process.env.VITE_BASE_URL!] },
 });
 app.use(morgan("combined"));
-app.use(cors());
-// {
-//  origin: [
-//    "http://127.0.0.1:5173",
-//    "ws://127.0.0.1:5173",
-//    "http://127.0.0.1:3000",
-//    "ws://127.0.0.1:3000",
-//  ],
-// }
 app.use(express.static(path.resolve("./dist")));
 
 io.on("connection", (ws) => {
@@ -49,7 +45,6 @@ io.on("connection", (ws) => {
   });
 
   ws.on("input", (msg) => {
-    console.log(msg);
     terminal.write(msg);
   });
 
@@ -59,7 +54,10 @@ io.on("connection", (ws) => {
   });
 });
 
-app.listen(port, (error) => {
-  if (error) return console.log(error);
+server.listen(port, (error: unknown) => {
+  if (error) {
+    console.log(error);
+    return;
+  }
   console.log(`>Server started on port ${port}`);
 });
