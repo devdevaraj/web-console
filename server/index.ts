@@ -9,7 +9,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import morgan from "morgan";
 
-const CONTAINER_ID = "6f09a7a9d96b";
 
 // Configs
 dotenv.config();
@@ -20,6 +19,9 @@ const port = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
 // const wss = new WebSocketServer({ server, perMessageDeflate: false });
+const CONTAINER_ID = process.env.CONTAINER_ID;
+
+
 app.use(
   cors({
     origin: "*",
