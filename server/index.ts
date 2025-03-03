@@ -9,10 +9,12 @@ import cors from "cors";
 import dotenv from "dotenv";
 import morgan from "morgan";
 
+const CONTAINER_ID = "6f09a7a9d96b";
+
 // Configs
 dotenv.config();
 const port = process.env.PORT || 3000;
-const shell = os.platform() === "win32" ? "poweshell.exe" : "bash";
+// const shell = os.platform() === "win32" ? "poweshell.exe" : "bash";
 
 // Inits
 const app = express();
@@ -20,11 +22,11 @@ const server = http.createServer(app);
 // const wss = new WebSocketServer({ server, perMessageDeflate: false });
 app.use(
   cors({
-    origin: [process.env.VITE_BASE_URL!],
+    origin: "*",
   })
 );
 const io = new Server(server, {
-  cors: { origin: [process.env.VITE_BASE_URL!] },
+  cors: { origin: "*" },
 });
 app.use(morgan("combined"));
 app.use(express.static(path.resolve("./dist")));
@@ -32,13 +34,23 @@ app.use(express.static(path.resolve("./dist")));
 io.on("connection", (ws) => {
   console.log("Connected");
 
-  const terminal = pty.spawn(shell, [], {
-    name: "xterm-color",
-    cols: 80,
-    rows: 24,
-    cwd: process.env.HOME,
-    env: process.env,
-  });
+  // const terminal = pty.spawn(shell, [], {
+  //   name: "xterm-color",
+  //   cols: 80,
+  //   rows: 24,
+  //   cwd: process.env.HOME,
+  //   env: process.env,
+  // });
+
+  const terminal = pty.spawn(
+    "docker",
+    ["exec", "-it", CONTAINER_ID, "/bin/bash"],
+    {
+      name: "xterm-color",
+      cols: 80,
+      rows: 32,
+    }
+  );
 
   terminal.onData((data) => {
     ws.emit("terminal-data", data);

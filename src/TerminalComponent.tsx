@@ -7,13 +7,15 @@ import { DefaultEventsMap } from "socket.io";
 
 function TerminalComponent() {
  const terminalRef = useRef<HTMLDivElement | null>(null);
- const socket = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>(io(import.meta.env.VITE_BASE_URL));
+ const socket = useRef<Socket<DefaultEventsMap, DefaultEventsMap>>(io());
  const term = useRef<Terminal | null>(null);
 
  useEffect(() => {
   if (!terminalRef.current) return;
 
   term.current = new Terminal({
+   cols: 80,
+   rows: 32,
    cursorBlink: true,
    theme: { background: "black", foreground: "white" }
   });
